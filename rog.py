@@ -12,6 +12,8 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 SIZE = 25
 PIXEL_SIZE = 20
+RED = (186, 0, 0)
+BEIGE = (169, 149, 123)
 
 ## affichage de caractères
 def draw_char(text, position, font, color=BLACK, background=WHITE):
@@ -82,7 +84,7 @@ MAP = np.transpose(MAP)
 DOTS = []
 for (i, j) in product(range(21), range(21)):
     if MAP[i, j] == '.':
-        DOTS.append((i, j , 0))
+        DOTS.append((i, j,0))
 
 #Création de la matrice des objets
 mat_obj = np.full((25,25), None)
@@ -92,8 +94,8 @@ for i in range(10) :
     new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
     i,j,state = secrets.choice(DOTS) #on choisit un triplet dans la liste de Tonio
     while state == 1 : #si la place est déjà occupée
-         i,j,state = secrets.choice(DOTS)
-    mat_obj[i,j] = new_obj  
+         i,j= secrets.choice(DOTS)
+    mat_obj[i,j] = new_obj
 
 ## Classes Objets et monstres
 class Objet :
@@ -104,7 +106,6 @@ class Objet :
          #On rajoute un num ????
 
     def take(self, Prendre = True) : #Pour l'instant on prend les pièces une par une à voir comment on fait pour le nombre
-        pris = False
         if sac['taille'] >= taille_max :
             pass
         if self.name == '*':
@@ -116,8 +117,8 @@ class Objet :
             while state == 1 : 
                 i,j,state = secrets.choice(DOTS)
             mat_obj[i,j] = new_obj 
-            return sac
-        caption = "Prendre l'objet Y/N?" #voir comment il répond et comment interagir
+            pass
+        caption = "Prendre l'objet? Y/N" #voir comment il répond et comment interagir
         if Prendre == True :
             if self.name == 'j': #potion magique qui remet la vie à 10 points
                 sac['vie'] = 10
@@ -129,8 +130,6 @@ class Objet :
             mat_obj[x_position, y_position] = None
             new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
             i,j,state = secrets.choice(DOTS) #on choisit un triplet dans la liste de Tonio
-            while state == 1 : #si la place est déjà occupée
-                i,j,state = secrets.choice(DOTS)
             mat_obj[i,j] = new_obj
             
 ## initialisation de la fenêtre
@@ -158,11 +157,14 @@ caption = 'Play ROG game'
 
 while running:
     screen.fill(WHITE)
-    clock.tick(1)
+    clock.tick(4)
     # affichage plateau de jeu
     for i, j in product(range(SIZE), range(SIZE)):
         if i == x_position and j == y_position:
-            img, pos = draw_char('@', ((i-0.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
+            img, pos = draw_char('@', ((i-0.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = RED)
+            screen.blit(img, pos)
+        elif mat_obj[i, j]:
+            img, pos = draw_char(mat_obj[i,j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = BEIGE)
             screen.blit(img, pos)
         elif MAP[i,j]:
             # what the fuck
@@ -181,21 +183,21 @@ while running:
                 running = False
             elif event.key == pg.K_UP:
                 # on reste dans le screen et on peut accéder à la case
-                print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position, y_position - 1]}")
                 if y_position and MAP[x_position, y_position - 1] in accessible_pos:
                     y_position -= 1
             elif event.key == pg.K_DOWN:
-                print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position, y_position + 1]}")
                 if y_position < SIZE - 1 and MAP[x_position, y_position + 1] in accessible_pos:
                     y_position += 1
             elif event.key == pg.K_LEFT:
-                print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position - 1, y_position]}")
                 if x_position and MAP[x_position - 1, y_position] in accessible_pos:
                     x_position -= 1
             elif event.key == pg.K_RIGHT:
-                print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position + 1, y_position]}")
                 if x_position and MAP[x_position + 1, y_position] in accessible_pos:
                     x_position += 1
+        if mat_obj[x_position, y_position]:
+            object = Objet(mat_obj[x_position, y_position])
+            object.take()
+
     pg.display.update()
 
 
