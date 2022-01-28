@@ -148,7 +148,7 @@ class Objet :
 
 class Monstre :
     """
-    args : power (1 or 2) wheter it's a small (m) or big (M) monster
+    args : power (1 or 2) whether it's a small (m) or big (M) monster
     """
     def __init__(self, power, x_pos, y_pos):
         if power == 1:
@@ -174,11 +174,11 @@ class Monstre :
                 sac['vie'] -= 5
         else: #fight won
             sac['portefeuille'] += 3
+        x_pos, y_pos = np.random.randint(25), np.random.randint(25)
+        while not(DOTS[x_pos, y_pos]) or (x_pos == x_position and y_pos == y_position):
             x_pos, y_pos = np.random.randint(25), np.random.randint(25)
-            while not(DOTS[x_pos, y_pos]) or (x_pos == x_position and y_pos == y_position):
-                x_pos, y_pos = np.random.randint(25), np.random.randint(25)
-            self.x_pos = x_pos
-            self.y_pos = y_pos
+        self.x_pos = x_pos
+        self.y_pos = y_pos
             
 ## initialisation de la fenêtre
 
@@ -237,7 +237,7 @@ def monster_moves(monster, map=MAP):
 running = True
 caption = 'Play ROG game'
 count = 0
-monsters = [Monstre(1, 3, 4)]
+monsters = [Monstre(1, 3, 4), Monstre(1, 18, 5), Monstre(2, 14, 15)]
 
 while running:
     screen.fill(WHITE)
