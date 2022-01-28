@@ -1,6 +1,7 @@
 ## imports
 
 import pygame as pg
+import random
 from random import randint
 from itertools import product
 import numpy as np
@@ -96,9 +97,9 @@ names_obj = ['*','j','!','(','&','o','n']
 
 for k in range(10) :
     new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
-    i,j = np.random(25), np.random(24) #on choisit un triplet dans la liste de Tonio
+    i,j = randint(0, 24), randint(0, 24) #on choisit un triplet dans la liste de Tonio
     while DOTS[i,j] != 1 : #si la place est déjà occupée ou non accessible
-         i,j = np.random(25), np.random(24)
+         i,j = randint(0, 24), randint(0, 24)
     mat_obj[i,j] = new_obj
     DOTS[i,j] = 0 #La place est occupée
 
@@ -118,9 +119,9 @@ class Objet :
             mat_obj[x_position, y_position] = None
             #Modification de la matrice objet
             new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
-            i,j = np.random(25), np.random(24) #on choisit un triplet dans la liste de Tonio
+            i,j = randint(0, 24), randint(0, 24) #on choisit un triplet dans la liste de Tonio
             while DOTS[i,j] != 1 : #si la place est déjà occupée ou non accessible
-                i,j = np.random(25), np.random(24)
+                i,j = randint(0, 24), randint(0, 24)
             mat_obj[i,j] = new_obj
             DOTS[i,j] = 0 #La place est occupée
             pass
@@ -134,9 +135,9 @@ class Objet :
             else : 
                 sac[self.name] = 1
             new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
-            i,j = np.random(25), np.random(24) #on choisit un triplet dans la liste de Tonio
+            i,j = randint(0, 24), randint(0, 24) #on choisit un triplet dans la liste de Tonio
             while DOTS[i,j] != 1 : #si la place est déjà occupée ou non accessible
-                i,j = np.random(25), np.random(24)
+                i,j = randint(0, 24), randint(0, 24)
             mat_obj[i,j] = new_obj
             DOTS[i,j] = 0 #La place est occupée
 
@@ -147,10 +148,10 @@ class Monstre :
     def __init__(self, power, x_pos, y_pos):
         if power == 1:
             self.proba = 0.5
-            self.name = m
+            self.name = 'm'
         if power == 2:
             self.proba = 0.2
-            self.name = M
+            self.name = 'M'
         self.x_pos = x_pos
         self.y_pos = y_pos
 
