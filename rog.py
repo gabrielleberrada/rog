@@ -69,7 +69,7 @@ MAP[15, 6] = '+'
 MAP[17, 13] = '+'
 MAP[3, 15] = '+'
 
-
+MAP = np.transpose(MAP)
 ## initialisation de la fenêtre
 
 pg.init()
@@ -98,11 +98,11 @@ while running:
     clock.tick(1)
     # affichage plateau de jeu
     for i, j in product(range(SIZE), range(SIZE)):
-        if j == x_position and i == y_position:
-            img, pos = draw_char('@', ((i-1.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
+        if i == x_position and j == y_position:
+             img, pos = draw_char('@', ((i-0.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
         elif MAP[i,j]:
             # what the fuck
-            img, pos = draw_char(MAP[i, j], (j*PIXEL_SIZE, i*PIXEL_SIZE), font=font_arial)
+            img, pos = draw_char(MAP[i, j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
         screen.blit(img, pos)
     # affichage messages
     if caption:
@@ -117,19 +117,22 @@ while running:
                 running = False
             elif event.key == pg.K_UP:
                 # on reste dans le screen et on peut accéder à la case
+                print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position, y_position - 1]}")
                 if y_position and MAP[x_position, y_position - 1] in accessible_pos:
-                    x_position -= 1
-            elif event.key == pg.K_DOWN:
-                if y_position < SIZE - 1 and MAP[x_position, y_position + 1] in accessible_pos:
-                    x_position += 1
-            elif event.key == pg.K_LEFT:
-                if x_position and MAP[x_position - 1, y_position] in accessible_pos:
                     y_position -= 1
+            elif event.key == pg.K_DOWN:
+                print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position, y_position + 1]}")
+                if y_position < SIZE - 1 and MAP[x_position, y_position + 1] in accessible_pos:
+                    y_position += 1
+            elif event.key == pg.K_LEFT:
+                print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position - 1, y_position]}")
+                if x_position and MAP[x_position - 1, y_position] in accessible_pos:
+                    x_position -= 1
             elif event.key == pg.K_RIGHT:
                 print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position + 1, y_position]}")
                 if x_position and MAP[x_position + 1, y_position] in accessible_pos:
-                    y_position += 1
+                    x_position += 1
     pg.display.update()
 
 
-pg.quit()
+pg.quit()## imports
