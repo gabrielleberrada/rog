@@ -91,7 +91,7 @@ pg.display.flip()
 font_arial = pg.font.SysFont('arial', 20)
 
 ## initialisation de la position
-x_position = 1
+x_position = 2
 y_position = 5
 
 ## points accessibles
@@ -108,11 +108,12 @@ while running:
     # affichage plateau de jeu
     for i, j in product(range(SIZE), range(SIZE)):
         if i == x_position and j == y_position:
-             img, pos = draw_char('@', ((i-0.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
+            img, pos = draw_char('@', ((i-0.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
+            screen.blit(img, pos)
         elif MAP[i,j]:
             # what the fuck
             img, pos = draw_char(MAP[i, j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
-        screen.blit(img, pos)
+            screen.blit(img, pos)
     # affichage messages
     if caption:
         pg.display.set_caption(caption)
