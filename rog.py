@@ -73,24 +73,37 @@ MAP[3, 15] = '+'
 ## initialisation de la fenêtre
 
 pg.init()
+clock = pg.time.Clock()
 screen= pg.display.set_mode((SIZE * PIXEL_SIZE, SIZE * PIXEL_SIZE))
-screen.fill(WHITE)
 pg.display.flip()
+
 
 ## initialisation de la police
 font_arial = pg.font.SysFont('arial', 20)
+
+## initialisation de la position
+x_position = 1
+y_position = 5
+
+## points accessibles
+accessible_pos = ['.', '+', '#']
+
 
 ## jeu
 running = True
 caption = 'Play ROG game'
 
 while running:
+    screen.fill(WHITE)
+    clock.tick(1)
     # affichage plateau de jeu
     for i, j in product(range(SIZE), range(SIZE)):
-        if MAP[i,j]:
+        if j == x_position and i == y_position:
+            img, pos = draw_char('@', ((i-1.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
+        elif MAP[i,j]:
             # what the fuck
-            img, pos = draw_char(MAP[i,j], (j*PIXEL_SIZE, i*PIXEL_SIZE), font=font_arial)
-            screen.blit(img, pos)
+            img, pos = draw_char(MAP[i, j], (j*PIXEL_SIZE, i*PIXEL_SIZE), font=font_arial)
+        screen.blit(img, pos)
     # affichage messages
     if caption:
         pg.display.set_caption(caption)
@@ -99,6 +112,23 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        elif event.type == pg.KEYDOWN:
+            if event.key == pg.K_q:
+                running = False
+            elif event.key == pg.K_UP:
+                # on reste dans le screen et on peut accéder à la case
+                if y_position and MAP[x_position, y_position - 1] in accessible_pos:
+                    x_position -= 1
+            elif event.key == pg.K_DOWN:
+                if y_position < SIZE - 1 and MAP[x_position, y_position + 1] in accessible_pos:
+                    x_position += 1
+            elif event.key == pg.K_LEFT:
+                if x_position and MAP[x_position - 1, y_position] in accessible_pos:
+                    y_position -= 1
+            elif event.key == pg.K_RIGHT:
+                print(f"x = {x_position}, y = {y_position}, map = {MAP[x_position + 1, y_position]}")
+                if x_position and MAP[x_position + 1, y_position] in accessible_pos:
+                    y_position += 1
     pg.display.update()
 
 
