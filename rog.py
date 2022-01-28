@@ -59,7 +59,8 @@ while running:
     # affichage plateau de jeu
     for i, j in product(range(SIZE), range(SIZE)):
         if MAP[i,j]:
-            img, pos = draw_char(MAP[i,j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
+            # what the fuck
+            img, pos = draw_char(MAP[i,j], (j*PIXEL_SIZE, i*PIXEL_SIZE), font=font_arial)
             screen.blit(img, pos)
     # affichage messages
     if caption:
