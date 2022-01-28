@@ -1,5 +1,6 @@
 ## imports
 
+from ast import Not
 from xml.etree.ElementTree import PI
 import pygame as pg
 import random
@@ -15,11 +16,12 @@ BLACK = (0, 0, 0)
 RED = (186, 0, 0)
 BEIGE = (169, 149, 123)
 CERULEAN = (42, 82, 190)
+SAPIN = (9, 82, 40)
 SIZE = 25
 PIXEL_SIZE = 20
 
 ## affichage de caractères
-def draw_char(text, position, font, color=BLACK, background=WHITE):
+def draw_char(text, position, font, color=BLACK, background=BEIGE):
     return font.render(text, False, color, background), position
 
 ## initialisation du sac
@@ -242,13 +244,13 @@ def draw_rect(i, j, color):
     rect = pg.Rect(i*PIXEL_SIZE, j*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE)
     pg.draw.rect(screen, color, rect)
 
-def draw_set(colors=colors):
+def draw_set(map=MAP, colors=colors):
     for i, j in product(range(SIZE), range(SIZE)):
         if map[i, j] == '#':
             draw_rect(i, j, colors['road'])
         elif map[i, j] == '-' or map[i,j] == '|':
             draw_rect(i, j, colors['wall'])
-        elif map[i, j] == '.':
+        elif map[i, j] == '.' or map[i, j] == '+':
             draw_rect(i, j, colors['floor'])
 
 ## jeu
@@ -264,10 +266,10 @@ while running:
     draw_set()
     for i, j in product(range(SIZE), range(SIZE)):
         if i == x_position and j == y_position:
-            img, pos = draw_char('@', ((i-0.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = RED)
+            img, pos = draw_char('@', (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = RED)
             screen.blit(img, pos)
         elif mat_obj[i, j]:
-            img, pos = draw_char(mat_obj[i,j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = BEIGE)
+            img, pos = draw_char(mat_obj[i,j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = SAPIN)
             screen.blit(img, pos)
         # elif MAP[i,j]:
         #     img, pos = draw_char(MAP[i, j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
@@ -312,7 +314,10 @@ while running:
                    prendre = True
             object.take(prendre) 
         else:
-            caption = 'Play Rog Game'
+            if (x_position == 10 or x_position == 11) and y_position <= 12 and y_position >= 10:
+                caption = 'T PIÉGÉ BOUFFON'
+            else:
+                caption = 'Play ROG game'
             pg.display.set_caption(caption)
         for monster in monsters:
             if monster.x_pos == x_position and monster.y_pos == y_position:
