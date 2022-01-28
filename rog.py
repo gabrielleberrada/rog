@@ -11,10 +11,11 @@ import secrets
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-SIZE = 25
-PIXEL_SIZE = 20
 RED = (186, 0, 0)
 BEIGE = (169, 149, 123)
+CERULEAN = (42, 82, 190)
+SIZE = 25
+PIXEL_SIZE = 20
 
 ## affichage de caractères
 def draw_char(text, position, font, color=BLACK, background=WHITE):
@@ -160,7 +161,7 @@ class Monstre :
         self.y_pos = y_pos
 
     def fight(self):
-        succes = random.uniform()
+        succes = random.uniform(0, 1)
         if '!' in sac.keys():
             succes += 0.2
         if '(' in sac.keys():
@@ -171,8 +172,13 @@ class Monstre :
                 sac['&'] -= 1
             else:
                 sac['vie'] -= 5
-        else:  #fight won
+        else: #fight won
             sac['portefeuille'] += 3
+            x_pos, y_pos = np.random.randint(25), np.random.randint(25)
+            while not(DOTS[x_pos, y_pos]) or (x_pos == x_position and y_pos == y_position):
+                x_pos, y_pos = np.random.randint(25), np.random.randint(25)
+            self.x_pos = x_pos
+            self.y_pos = y_pos
             
 ## initialisation de la fenêtre
 
@@ -192,10 +198,46 @@ y_position = 5
 ## points accessibles
 accessible_pos = ['.', '+', '#']
 
+## mouvements
+
+def authorized_movement(x_position, y_position, mvmt, map=MAP):
+    if mvmt == 'up':
+        if y_position and map[x_position, y_position - 1] in accessible_pos:
+            return True
+        return False
+    if mvmt == 'down':
+        if y_position < SIZE - 1 and map[x_position, y_position + 1] in accessible_pos:
+            return True
+        return False
+    if mvmt == 'left':
+        if x_position and map[x_position - 1, y_position] in accessible_pos:
+            return True
+        return False
+    if mvmt == 'right': 
+        if x_position < SIZE - 1 and map[x_position + 1, y_position] in accessible_pos:
+            return True
+        return False
+
+def monster_moves(monster, map=MAP):
+    x = monster.x_pos
+    y = monster.y_pos
+    mvmt = np.random.choice(['up', 'down', 'left', 'right'])
+    while not(authorized_movement(x, y, mvmt, map)):
+        mvmt = np.random.choice(['up', 'down', 'left', 'right'])
+    if mvmt == 'up': 
+        return x, y - 1
+    if mvmt == 'down':
+        return x, y + 1
+    if mvmt == 'left':
+        return x - 1, y
+    if mvmt == 'right':
+        return x + 1, y
 
 ## jeu
 running = True
 caption = 'Play ROG game'
+count = 0
+monsters = [Monstre(1, 3, 4)]
 
 while running:
     screen.fill(WHITE)
@@ -241,13 +283,23 @@ while running:
             caption = "Prendre l'objet ? y/n"
             pg.display.set_caption(caption)
             pg.display.flip()
+            prendre = False
             if event.type == pg.KEYDOWN:
                 caption = "Play ROG game" 
-                prendre = False
                 if event.key == pg.K_y:
                     prendre = True
             object.take(prendre)
-
+        for monster in monsters:
+            if monster.x_pos == x_position and monster.y_pos == y_position:
+                monster.fight()    
+    for monster in monsters:
+        img, pos = draw_char(monster.name, (monster.x_pos*PIXEL_SIZE, monster.y_pos*PIXEL_SIZE), font=font_arial, color = CERULEAN)
+        screen.blit(img, pos)
+        if not(count % 3):
+            x, y = monster_moves(monster)
+            monster.x_pos = x
+            monster.y_pos = y
+    count += 1
     pg.display.update()
 
 
