@@ -4,6 +4,7 @@ import pygame as pg
 from random import randint
 from itertools import product
 import numpy as np
+import secrets
 
 ## constantes
 
@@ -88,10 +89,10 @@ mat_obj = np.full((25,25), None)
 names_obj = ['*','j','!','(','&','o','n']
 
 for i in range(10) :
-    new_obj = np.random.choice(names_obj) # on choisit un objet au hasard
-    i,j,state = np.random.choice(DOTS) #on choisit un triplet dans la liste de Tonio
+    new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
+    i,j,state = secrets.choice(DOTS) #on choisit un triplet dans la liste de Tonio
     while state == 1 : #si la place est déjà occupée
-         i,j,state = np.random.choice(DOTS)
+         i,j,state = secrets.choice(DOTS)
     mat_obj[i,j] = new_obj  
 
 ## Classes Objets et monstres
@@ -110,10 +111,10 @@ class Objet :
             sac['portefeuille']+=1
             mat_obj[x_position, y_position] = None
             #Modification de la matrice objet
-            new_obj = np.random.choice(names_obj) 
-            i,j,state = np.random.choice(DOTS) 
+            new_obj = secrets.choice(names_obj) 
+            i,j,state = secrets.choice(DOTS) 
             while state == 1 : 
-                i,j,state = np.random.choice(DOTS)
+                i,j,state = secrets.choice(DOTS)
             mat_obj[i,j] = new_obj 
             return sac
         caption = "Prendre l'objet Y/N?" #voir comment il répond et comment interagir
@@ -126,10 +127,10 @@ class Objet :
             else : 
                 sac[self.name] = 1
             mat_obj[x_position, y_position] = None
-            new_obj = np.random.choice(names_obj) # on choisit un objet au hasard
-            i,j,state = np.random.choice(DOTS) #on choisit un triplet dans la liste de Tonio
+            new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
+            i,j,state = secrets.choice(DOTS) #on choisit un triplet dans la liste de Tonio
             while state == 1 : #si la place est déjà occupée
-                i,j,state = np.random.choice(DOTS)
+                i,j,state = secrets.choice(DOTS)
             mat_obj[i,j] = new_obj
             
 ## initialisation de la fenêtre
