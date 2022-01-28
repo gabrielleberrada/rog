@@ -9,7 +9,7 @@ import numpy as np
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-SIZE = 20
+SIZE = 25
 PIXEL_SIZE = 20
 
 ## affichage de caractères
@@ -78,7 +78,7 @@ for (i, j) in product(range(21), range(21)):
     if MAP[i, j] == '.':
         DOTS.append((i, j , 0))
 
-        
+
 ## initialisation de la fenêtre
 
 pg.init()
