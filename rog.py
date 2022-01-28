@@ -16,7 +16,7 @@ PIXEL_SIZE = 20
 def draw_char(text, position, font, color=BLACK, background=WHITE):
     return font.render(text, False, color, background), position
 
-## initialisation de la MAP
+## initialisation de la MAP et de DOTS
 
 MAP = np.full((20,20), None)
 
