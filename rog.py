@@ -117,6 +117,7 @@ class Objet :
         if self.name == '*':
             sac['portefeuille']+=1
             mat_obj[x_position, y_position] = None
+            DOTS[x_position, y_position] = 1
             #Modification de la matrice objet
             new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
             i,j = randint(0, 24), randint(0, 24) #on choisit un triplet dans la liste de Tonio
@@ -134,6 +135,9 @@ class Objet :
                 sac['taille']+= 1
             else : 
                 sac[self.name] = 1
+                sac['taille']+=1
+            mat_obj[x_position, y_position] = None
+            DOTS[x_position, y_position] = 1
             new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
             i,j = randint(0, 24), randint(0, 24) #on choisit un triplet dans la liste de Tonio
             while DOTS[i,j] != 1 : #si la place est déjà occupée ou non accessible
