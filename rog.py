@@ -23,13 +23,13 @@ def draw_char(text, position, font, color=BLACK, background=WHITE):
     return font.render(text, False, color, background), position
 
 ## initialisation du sac
-sac = {'taille' : 0, 'vie': 10, 'portefeuille' : 0}
+sac = {'taille' : 0, 'vie': 10, 'argent' : 0}
 taille_max = 5
  
 
 ## initialisation de la MAP et de DOTS
 
-MAP = np.full((25,25), None)
+MAP = np.full((25,50), None)
 
 # |
 MAP[3:20, 14] = '|'
@@ -95,7 +95,7 @@ for (i, j) in product(range(21), range(21)):
 
 #Création de la matrice des objets
 mat_obj = np.full((25,25), None)
-names_obj = ['*','j','!','(','&','o','n']
+names_obj = ['*','j','!','(','&','o']
 
 for k in range(10) :
     new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
@@ -113,11 +113,11 @@ class Objet :
         self.name = name #un array d'une lettre
          #On rajoute un num ????
 
-    def take(self, Prendre = True) : #Pour l'instant on prend les pièces une par une à voir comment on fait pour le nombre
+    def take(self, Prendre) : #Pour l'instant on prend les pièces une par une à voir comment on fait pour le nombre
         if sac['taille'] >= taille_max :
-            pass
+            return None
         if self.name == '*':
-            sac['portefeuille']+=1
+            sac['argent']+=1
             mat_obj[x_position, y_position] = None
             DOTS[x_position, y_position] = 1
             #Modification de la matrice objet
@@ -127,15 +127,14 @@ class Objet :
                 i,j = randint(0, 24), randint(0, 24)
             mat_obj[i,j] = new_obj
             DOTS[i,j] = 0 #La place est occupée
-            pass
-        caption = "Prendre l'objet? Y/N" #voir comment il répond et comment interagir
+            
         if Prendre == True :
             if self.name == 'j': #potion magique qui remet la vie à 10 points
                 sac['vie'] = 10
             elif self.name in sac :            
                 sac[self.name] += 1
                 sac['taille']+= 1
-            else : 
+            else :
                 sac[self.name] = 1
                 sac['taille']+=1
             mat_obj[x_position, y_position] = None
@@ -163,10 +162,12 @@ class Monstre :
 
     def fight(self):
         succes = random.uniform(0, 1)
-        if '!' in sac.keys():
+        if '!' in sac.keys() and sac['!'] >= 1:
             succes += 0.2
-        if '(' in sac.keys():
+            sac['!'] -= 1
+        if '(' in sac.keys() and sac['('] >= 1:
             succes += 0.1
+            sac['('] -= 1
         if succes <= self.proba: #fight lost
             if '&' in sac.keys() and sac['&'] >= 1:
                 sac['vie'] -= 3
@@ -174,7 +175,7 @@ class Monstre :
             else:
                 sac['vie'] -= 5
         else: #fight won
-            sac['portefeuille'] += 3
+            sac['argent'] += 3
         x_pos, y_pos = np.random.randint(25), np.random.randint(25)
         while not(DOTS[x_pos, y_pos]) or (x_pos == x_position and y_pos == y_position):
             x_pos, y_pos = np.random.randint(25), np.random.randint(25)
@@ -252,12 +253,17 @@ while running:
             img, pos = draw_char(mat_obj[i,j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = BEIGE)
             screen.blit(img, pos)
         elif MAP[i,j]:
+            # what the fuck
             img, pos = draw_char(MAP[i, j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
             screen.blit(img, pos)
+        img, pos = draw_char('inventaire', (1*PIXEL_SIZE, 21*PIXEL_SIZE), font=font_arial, color = BLACK)
+        screen.blit(img, pos)
+    for i, elements in enumerate(sac.keys()):
+        img, pos = draw_char(f"{elements}:{sac[elements]}", (5*i*PIXEL_SIZE, 23*PIXEL_SIZE), font=font_arial, color=BLACK)
+        screen.blit(img, pos)
     # affichage messages
     if caption:
         pg.display.set_caption(caption)
-        pg.display.flip()
     # itération sur tous les événements
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -280,15 +286,18 @@ while running:
                     x_position += 1
         if mat_obj[x_position, y_position]:
             object = Objet(mat_obj[x_position, y_position])
-            caption = "Prendre l'objet ? y/n"
+            caption = "Prendre l'objet ? (press y)"
             pg.display.set_caption(caption)
-            pg.display.flip()
             prendre = False
             if event.type == pg.KEYDOWN:
                 caption = "Play ROG game" 
+                pg.display.set_caption(caption)
                 if event.key == pg.K_y:
-                    prendre = True
-            object.take(prendre)
+                   prendre = True
+            object.take(prendre) 
+        else:
+            caption = 'Play Rog Game'
+            pg.display.set_caption(caption)
         for monster in monsters:
             if monster.x_pos == x_position and monster.y_pos == y_position:
                 monster.fight()    
@@ -300,10 +309,14 @@ while running:
             monster.x_pos = x
             monster.y_pos = y
     count += 1
+    if (x_position, y_position) == (2, 1):
+        x_position, y_position = 10, 10
+        caption = "T PIÉGÉ BOUFFON"
+        pg.display.set_caption(caption)
     if sac['vie'] <= 0:
         running = False
         print("You lost the game")
     pg.display.update()
 
 
-pg.quit()## imports
+pg.quit()
