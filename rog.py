@@ -238,7 +238,15 @@ while running:
                     x_position += 1
         if mat_obj[x_position, y_position]:
             object = Objet(mat_obj[x_position, y_position])
-            object.take()
+            caption = "Prendre l'objet ? y/n"
+            pg.display.set_caption(caption)
+            pg.display.flip()
+            if event.type == pg.KEYDOWN:
+                caption = "Play ROG game" 
+                prendre = False
+                if event.key == pg.K_y:
+                    prendre = True
+            object.take(prendre)
 
     pg.display.update()
 
