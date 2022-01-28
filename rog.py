@@ -235,6 +235,22 @@ def monster_moves(monster, map=MAP):
     if mvmt == 'right':
         return x + 1, y
 
+## graphisme
+colors = {'wall' : BLACK, 'floor': BEIGE, 'empty': WHITE, 'road': BEIGE}
+
+def draw_rect(i, j, color):
+    rect = pg.Rect(i*PIXEL_SIZE, j*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE)
+    pg.draw.rect(screen, color, rect)
+
+def draw_set(colors=colors):
+    for i, j in product(range(SIZE), range(SIZE)):
+        if map[i, j] == '#':
+            draw_rect(i, j, colors['road'])
+        elif map[i, j] == '-' or map[i,j] == '|':
+            draw_rect(i, j, colors['wall'])
+        elif map[i, j] == '.':
+            draw_rect(i, j, colors['floor'])
+
 ## jeu
 running = True
 caption = 'Play ROG game'
@@ -245,6 +261,7 @@ while running:
     screen.fill(WHITE)
     clock.tick(4)
     # affichage plateau de jeu
+    draw_set()
     for i, j in product(range(SIZE), range(SIZE)):
         if i == x_position and j == y_position:
             img, pos = draw_char('@', ((i-0.3)*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = RED)
@@ -252,12 +269,11 @@ while running:
         elif mat_obj[i, j]:
             img, pos = draw_char(mat_obj[i,j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = BEIGE)
             screen.blit(img, pos)
-        elif MAP[i,j]:
-            # what the fuck
-            img, pos = draw_char(MAP[i, j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
-            screen.blit(img, pos)
-        img, pos = draw_char('inventaire', (1*PIXEL_SIZE, 21*PIXEL_SIZE), font=font_arial, color = BLACK)
-        screen.blit(img, pos)
+        # elif MAP[i,j]:
+        #     img, pos = draw_char(MAP[i, j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
+        #     screen.blit(img, pos)
+        # img, pos = draw_char('inventaire', (1*PIXEL_SIZE, 21*PIXEL_SIZE), font=font_arial, color = BLACK)
+        # screen.blit(img, pos)
     for i, elements in enumerate(sac.keys()):
         img, pos = draw_char(f"{elements}:{sac[elements]}", (5*i*PIXEL_SIZE, 23*PIXEL_SIZE), font=font_arial, color=BLACK)
         screen.blit(img, pos)
