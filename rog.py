@@ -78,6 +78,8 @@ MAP[15, 7] = '+'
 MAP[17, 14] = '+'
 MAP[3, 16] = '+'
 MAP[7,16] = '+'
+MAP[17, 11] = '+'
+MAP[4, 8] = '+'
 
 MAP = np.transpose(MAP)
 
@@ -131,7 +133,36 @@ class Objet :
             new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
             i,j,state = secrets.choice(DOTS) #on choisit un triplet dans la liste de Tonio
             mat_obj[i,j] = new_obj
-            
+
+class Monstre :
+    """
+    args : power (1 or 2) wheter it's a small (m) or big (M) monster
+    """
+    def __init__(self, power, x_pos, y_pos):
+        if power == 1:
+            self.proba = 0.5
+            self.name = m
+        if power == 2:
+            self.proba = 0.2
+            self.name = M
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+    def fight(self):
+        succes = random.uniform()
+        if '!' in sac.keys():
+            succes += 0.2
+        if '(' in sac.keys():
+            succes += 0.1
+        if succes <= self.proba: #fight lost
+            if '&' in sac.keys() and sac['&'] >= 1:
+                sac['vie'] -= 3
+                sac['&'] -= 1
+            else:
+                sac['vie'] -= 5
+        else:  #fight won
+            sac['portefeuille'] += 3
+
 ## initialisation de la fenêtre
 
 pg.init()
