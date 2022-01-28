@@ -1,5 +1,6 @@
 ## imports
 
+from xml.etree.ElementTree import PI
 import pygame as pg
 import random
 from random import randint
@@ -251,7 +252,6 @@ while running:
             img, pos = draw_char(mat_obj[i,j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial, color = BEIGE)
             screen.blit(img, pos)
         elif MAP[i,j]:
-            # what the fuck
             img, pos = draw_char(MAP[i, j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
             screen.blit(img, pos)
     # affichage messages
@@ -300,6 +300,9 @@ while running:
             monster.x_pos = x
             monster.y_pos = y
     count += 1
+    if sac['vie'] <= 0:
+        running = False
+        print("You lost the game")
     pg.display.update()
 
 
