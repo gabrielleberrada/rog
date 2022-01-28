@@ -8,14 +8,13 @@ import numpy as np
 ## constantes
 
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 SIZE = 20
 PIXEL_SIZE = 20
 
-## initialisation de la fenêtre
-
-screen= pg.display.set_mode((SIZE * PIXEL_SIZE, SIZE * PIXEL_SIZE))
-screen.fill(WHITE)
-pg.display.flip()
+## affichage de caractères
+def draw_char(text, position, font, color=BLACK, background=WHITE):
+    return font.render(text, False, color, background), position
 
 ## initialisation de la MAP
 
@@ -42,15 +41,35 @@ MAP[15:20, 10] = '|'
 MAP[7:12, 9] = '|'
 MAP[7:12, 12] = '|'
 
+## initialisation de la fenêtre
+
+pg.init()
+screen= pg.display.set_mode((SIZE * PIXEL_SIZE, SIZE * PIXEL_SIZE))
+screen.fill(WHITE)
+pg.display.flip()
+
+## initialisation de la police
+font_arial = pg.font.SysFont('arial', 20)
+
 ## jeu
 running = True
+caption = 'Play ROG game'
 
 while running:
-#     if caption:
-#         pg.display.set_caption(caption)
-#         pg.display.flip()
+    # affichage plateau de jeu
+    for i, j in product(range(SIZE), range(SIZE)):
+        if MAP[i,j]:
+            img, pos = draw_char(MAP[i,j], (i*PIXEL_SIZE, j*PIXEL_SIZE), font=font_arial)
+            screen.blit(img, pos)
+    # affichage messages
+    if caption:
+        pg.display.set_caption(caption)
+        pg.display.flip()
+    # itération sur tous les événements
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+    pg.display.update()
+
 
 pg.quit()
