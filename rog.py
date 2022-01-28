@@ -83,21 +83,24 @@ MAP[4, 8] = '+'
 
 MAP = np.transpose(MAP)
 
-DOTS = []
+DOTS = np.full((25,25), None)
 for (i, j) in product(range(21), range(21)):
-    if MAP[i, j] == '.':
-        DOTS.append((i, j,0))
+    if MAP[i, j] in ['.','#'] :
+        DOTS[i,j] = 1
+    
+    
 
 #Création de la matrice des objets
 mat_obj = np.full((25,25), None)
 names_obj = ['*','j','!','(','&','o','n']
 
-for i in range(10) :
+for k in range(10) :
     new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
-    i,j,state = secrets.choice(DOTS) #on choisit un triplet dans la liste de Tonio
-    while state == 1 : #si la place est déjà occupée
-         i,j= secrets.choice(DOTS)
+    i,j = np.random(25), np.random(24) #on choisit un triplet dans la liste de Tonio
+    while DOTS[i,j] != 1 : #si la place est déjà occupée ou non accessible
+         i,j = np.random(25), np.random(24)
     mat_obj[i,j] = new_obj
+    DOTS[i,j] = 0 #La place est occupée
 
 ## Classes Objets et monstres
 class Objet :
@@ -114,11 +117,12 @@ class Objet :
             sac['portefeuille']+=1
             mat_obj[x_position, y_position] = None
             #Modification de la matrice objet
-            new_obj = secrets.choice(names_obj) 
-            i,j,state = secrets.choice(DOTS) 
-            while state == 1 : 
-                i,j,state = secrets.choice(DOTS)
-            mat_obj[i,j] = new_obj 
+            new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
+            i,j = np.random(25), np.random(24) #on choisit un triplet dans la liste de Tonio
+            while DOTS[i,j] != 1 : #si la place est déjà occupée ou non accessible
+                i,j = np.random(25), np.random(24)
+            mat_obj[i,j] = new_obj
+            DOTS[i,j] = 0 #La place est occupée
             pass
         caption = "Prendre l'objet? Y/N" #voir comment il répond et comment interagir
         if Prendre == True :
@@ -129,10 +133,12 @@ class Objet :
                 sac['taille']+= 1
             else : 
                 sac[self.name] = 1
-            mat_obj[x_position, y_position] = None
             new_obj = secrets.choice(names_obj) # on choisit un objet au hasard
-            i,j,state = secrets.choice(DOTS) #on choisit un triplet dans la liste de Tonio
+            i,j = np.random(25), np.random(24) #on choisit un triplet dans la liste de Tonio
+            while DOTS[i,j] != 1 : #si la place est déjà occupée ou non accessible
+                i,j = np.random(25), np.random(24)
             mat_obj[i,j] = new_obj
+            DOTS[i,j] = 0 #La place est occupée
 
 class Monstre :
     """
@@ -162,7 +168,7 @@ class Monstre :
                 sac['vie'] -= 5
         else:  #fight won
             sac['portefeuille'] += 3
-
+            
 ## initialisation de la fenêtre
 
 pg.init()
